@@ -33,11 +33,11 @@ async function list(req, res) {
 }
 
 async function create(req, res) {
-  const reservation = await service.create(req.body.data);
-  res.status(201).json({ data: reservation });
+  const newReservation = await service.create(req.body.data);
+  res.status(201).json({ data: newReservation });
 }
 
 module.exports = {
   list,
-  create: [ hasValidInput, asyncErrorBoundary(create) ],
+  create: [ asyncErrorBoundary(create) ],
 };

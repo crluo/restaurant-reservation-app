@@ -13,8 +13,4 @@ router.route("/")
     .post(controller.create)
     .all(notFound);
 
-// router.route("/new")
-    
-//     .all(notFound);
-
 module.exports = router;
