@@ -13,10 +13,9 @@ function ReservationForm() {
         const abortController = new AbortController();
         async function addReservation() {
             try {
-                console.log(formData)
-                await createReservation( formData, abortController.signal );
+                const newReservation = await createReservation( formData, abortController.signal );
                 setFormData({});
-                history.push(`/dashboard`);
+                history.push(`/dashboard?date=${newReservation.reservation_date}`);
             } catch (error) {
                 setError(error)
             }
@@ -32,7 +31,7 @@ function ReservationForm() {
     }
 
     function handleCancel(event) {
-
+        history.goBack();
     }
 
     return (
@@ -64,7 +63,7 @@ function ReservationForm() {
                     <input name="people" required min={1} value={formData.people} onChange={handleReservationInputChange} type="number" className="form-control" id="exampleInputPassword1" placeholder="0"/>
                 </div>
                 <button type="submit" className="btn btn-primary">Submit</button>
-                <button type="button" className="btn btn-primary">Cancel</button>
+                <button type="button" onClick={handleCancel} className="btn btn-primary">Cancel</button>
             </form>
         </div>
         

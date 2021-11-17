@@ -1,7 +1,7 @@
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
-const VALID_PROPERTIES = [
+const VALID_FIELDS = [
   "first_name",
   "last_name",
   "mobile_number",
@@ -12,16 +12,16 @@ const VALID_PROPERTIES = [
 
 // validation middleware
 function hasValidInput(req, res, next) {
-  const { data = {} } = req.body;
-  const invalidFields = Object.keys(data).filter(
-    (field) => !VALID_PROPERTIES.includes(field)
-  );
+  const input = req.body.data;
+  console.log(input)
+  const invalidFields = Object.keys(input).filter((field) => !VALID_FIELDS.includes(field));
   if (invalidFields.length) {
-    return next({
+    next({
       status: 400,
       message: `Invalid field(s): ${invalidFields.join(", ")}`,
     });
   }
+  next();
 }
 /**
  * List handler for reservation resources
@@ -39,5 +39,5 @@ async function create(req, res) {
 
 module.exports = {
   list,
-  create: [ asyncErrorBoundary(create) ],
+  create: [ hasValidInput, asyncErrorBoundary(create) ],
 };
