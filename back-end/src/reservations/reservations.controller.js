@@ -10,16 +10,44 @@ const VALID_FIELDS = [
   "people",
 ];
 
-// validation middleware
+/**
+ * validates whether client input is valid and sends corresponding error message
+ */
 function hasValidInput(req, res, next) {
-  const input = req.body.data;
-  console.log(input)
-  const invalidFields = Object.keys(input).filter((field) => !VALID_FIELDS.includes(field));
-  if (invalidFields.length) {
+  if (!req.body.data) {
     next({
       status: 400,
-      message: `Invalid field(s): ${invalidFields.join(", ")}`,
+      messge: "data is invalid",
+    })
+  }
+  const input = req.body.data;
+  const regexTime = new RegExp(/([01]?[0-9]|2[0-3]):[0-5][0-9]/);
+  const regexDate = new RegExp(/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/)
+  for ( let field of VALID_FIELDS ) {
+    if (!input[field]) {
+      next({
+        status: 400,
+        message: `${field} is invalid`,
+      })
+    }
+  }
+  if (!regexTime.test(input.reservation_time)) {
+    next({
+      status: 400,
+      message: `reservation_time is invalid`,
     });
+  }
+  if (!regexDate.test(input.reservation_date)) {
+    next({
+      status: 400,
+      message: `reservation_date is invalid`,
+    });
+  }
+  if (typeof input.people != "number") {
+    next({
+      status: 400,
+      message: `people is not a number`,
+    })
   }
   next();
 }
@@ -27,9 +55,9 @@ function hasValidInput(req, res, next) {
  * List handler for reservation resources
  */
 async function list(req, res) {
-  res.json({
-    data: [],
-  });
+  const reservation_date = req.query.date;
+  const reservations = await service.list(reservation_date);
+  res.json({ data: reservations });
 }
 
 async function create(req, res) {
@@ -38,6 +66,6 @@ async function create(req, res) {
 }
 
 module.exports = {
-  list,
+  list: [ asyncErrorBoundary(list) ],
   create: [ hasValidInput, asyncErrorBoundary(create) ],
 };
