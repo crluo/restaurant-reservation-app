@@ -51,6 +51,30 @@ function hasValidInput(req, res, next) {
   }
   next();
 }
+
+function validReservationTime(req, res, next) {
+  res.locals.reservation_date = new Date(req.body.data.reservation_date);
+  let openingTime = new Date("1990-01-01 10:30:00")
+  let closingTime = new Date("1990-01-01 21:30:00")
+  
+  let inputErrors = [];
+  if (res.locals.reservation_date.getDay() == 1) {
+    inputErrors.push("The restaurant is closed on Tuesday")
+  }
+  if (res.locals.reservation_date < Date.now()) {
+    inputErrors.push("Reservation date/time must occur in the future")
+  }
+  if (res.locals.reservation_date.getTime() < openingTime.getTime() || res.locals.reservation_date.getTime() > closingTime.getTime()) {
+    inputErrors.push("Please select a time between 10:30 and 21:30");
+  }
+  if (inputErrors.length) {
+    next({
+      status: 400,
+      message: inputErrors.toString(),
+    })
+  }
+  next();
+}
 /**
  * List handler for reservation resources
  */
@@ -67,5 +91,5 @@ async function create(req, res) {
 
 module.exports = {
   list: [ asyncErrorBoundary(list) ],
-  create: [ hasValidInput, asyncErrorBoundary(create) ],
+  create: [ hasValidInput, validReservationTime, asyncErrorBoundary(create) ],
 };

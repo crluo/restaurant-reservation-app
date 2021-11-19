@@ -11,7 +11,10 @@ import React from "react";
 function ErrorAlert({ error }) {
   return (
     error && (
-      <div className="alert alert-danger m-2">Error: {error.message}</div>
+      <div className="alert alert-danger m-2">
+        Please fix the following errors: 
+        <ul className="mt-3">{error.message.split(",").map((message) => <li>{message}</li>)}</ul>
+      </div>
     )
   );
 }
