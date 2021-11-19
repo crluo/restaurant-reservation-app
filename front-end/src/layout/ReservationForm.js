@@ -18,7 +18,7 @@ function ReservationForm() {
                 setFormData({});
                 history.push(`/dashboard?date=${formatReservationDate(newReservation).reservation_date}`);
             } catch (error) {
-                setError(error)
+                setError(error);
             }
         }
         addReservation();
