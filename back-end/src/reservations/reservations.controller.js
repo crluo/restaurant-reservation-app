@@ -73,7 +73,7 @@ function validReservationTime(req, res, next) {
       message: inputErrors.toString(),
     })
   }
-  // next();
+  next();
 }
 /**
  * List handler for reservation resources
