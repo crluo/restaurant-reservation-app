@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createReservation } from "../utils/api";
+import formatReservationDate from "../utils/format-reservation-date"
 import ErrorAlert from "./ErrorAlert";
 
 function ReservationForm() {
@@ -15,7 +16,7 @@ function ReservationForm() {
             try {
                 const newReservation = await createReservation( {...formData, people: Number(formData.people)}, abortController.signal );
                 setFormData({});
-                history.push(`/dashboard?date=${newReservation.reservation_date}`);
+                history.push(`/dashboard?date=${formatReservationDate(newReservation).reservation_date}`);
             } catch (error) {
                 setError(error)
             }
