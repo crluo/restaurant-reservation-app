@@ -56,6 +56,9 @@ function validReservationTime(req, res, next) {
   res.locals.reservation_date = new Date(req.body.data.reservation_date);
   let openingTime = new Date("1990-01-01 10:30:00")
   let closingTime = new Date("1990-01-01 21:30:00")
+  openingTime = `${openingTime.getHours()}` + `${openingTime.getMinutes()}`;
+  closingTime = `${closingTime.getHours()}` + `${closingTime.getMinutes()}`;
+  reservationTime = `${res.locals.reservation_date.getHours()}` + `${res.locals.reservation_date.getMinutes()}`;
   
   let inputErrors = [];
   if (res.locals.reservation_date.getDay() == 1) {
@@ -64,7 +67,8 @@ function validReservationTime(req, res, next) {
   if (res.locals.reservation_date < Date.now()) {
     inputErrors.push("Reservation date/time must occur in the future")
   }
-  if (res.locals.reservation_date.getTime() < openingTime.getTime() || res.locals.reservation_date.getTime() > closingTime.getTime()) {
+  if (reservationTime < openingTime || reservationTime > closingTime) {
+    console.log(reservationTime)
     inputErrors.push("Please select a time between 10:30 and 21:30");
   }
   if (inputErrors.length) {
