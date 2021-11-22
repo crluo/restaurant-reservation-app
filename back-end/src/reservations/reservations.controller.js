@@ -68,7 +68,6 @@ function validReservationTime(req, res, next) {
     inputErrors.push("Reservation date/time must occur in the future")
   }
   if (reservationTime < openingTime || reservationTime > closingTime) {
-    console.log(reservationTime)
     inputErrors.push("Please select a time between 10:30 and 21:30");
   }
   if (inputErrors.length) {
