@@ -54,11 +54,12 @@ function hasValidInput(req, res, next) {
 
 function validReservationTime(req, res, next) {
   res.locals.reservation_date = new Date(req.body.data.reservation_date);
+  res.locals.reservation_time = req.body.data.reservation_time;
   let openingTime = new Date("1990-01-01 10:30:00")
   let closingTime = new Date("1990-01-01 21:30:00")
   openingTime = `${openingTime.getHours()}` + `${openingTime.getMinutes()}`;
   closingTime = `${closingTime.getHours()}` + `${closingTime.getMinutes()}`;
-  reservationTime = `${res.locals.reservation_date.getHours()}` + `${res.locals.reservation_date.getMinutes()}`;
+  let reservationTime = res.locals.reservation_time.replace(":", "");
   
   let inputErrors = [];
   if (res.locals.reservation_date.getDay() == 1) {
@@ -70,6 +71,7 @@ function validReservationTime(req, res, next) {
   if (reservationTime < openingTime || reservationTime > closingTime) {
     inputErrors.push("Please select a time between 10:30 and 21:30");
   }
+
   if (inputErrors.length) {
     next({
       status: 400,
