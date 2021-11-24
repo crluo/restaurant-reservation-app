@@ -25,7 +25,7 @@ function TableForm() {
             <form onSubmit={ onTableSubmit }>
                 <div className="form-group">
                     <label for="exampleInputEmail1">Table Name</label>
-                    <input name="table_name" required value={formData.table_name} onChange={handleTableInputChange} type="text" className="form-control" id="first_name" aria-describedby="emailHelp" placeholder="John"/>
+                    <input name="table_name" required minlength={2} value={formData.table_name} onChange={handleTableInputChange} type="text" className="form-control" id="first_name" aria-describedby="emailHelp" placeholder="John"/>
                 </div>
                 <div className="form-group">
                     <label for="exampleInputPassword1">Capacity</label>
