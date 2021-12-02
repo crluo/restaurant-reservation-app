@@ -80,7 +80,7 @@ export async function createReservation(reservation, signal) {
 }
 
 export async function listTables(signal) {
-  const url = new URL(`${API_BASE_URL}/reservations`);
+  const url = new URL(`${API_BASE_URL}/tables`);
   return await fetchJson(url, { headers, signal }, []);
 }
 export async function createTable(table, signal) {

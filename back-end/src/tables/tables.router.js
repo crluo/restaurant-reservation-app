@@ -9,6 +9,7 @@
  const notFound = require("../errors/notFound")
  
  router.route("/")
+    .get(controller.list)
     .post(controller.create)
     .all(notFound);
  

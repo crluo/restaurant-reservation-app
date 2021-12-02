@@ -23,10 +23,17 @@ function hasValidInput(req, res, next) {
   }
   next();
 }
+
 async function create(req, res) {
-    const newTable = await service.create(req.body.data);
-    res.status(201).json({ data: newTable });
+  const newTable = await service.create(req.body.data);
+  res.status(201).json({ data: newTable });
+}
+
+async function list(req, res) {
+  const tables = await service.list();
+  res.json({ data: tables });
 }
 module.exports = {
   create: [ hasValidInput, asyncErrorBoundary(create) ],
+  list,
 };

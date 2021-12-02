@@ -1,13 +1,29 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { createTable } from "../utils/api";
 import ErrorAlert from "./ErrorAlert";
 
+const INITIAL_FORM_DATA = {
+    table_name: "",
+    capacity: 0,
+}
 function TableForm() {
     const history = useHistory();
-    const [ formData, setFormData ] = useState({});
+    const [ formData, setFormData ] = useState(INITIAL_FORM_DATA);
+    const [ error, setError ] = useState(null);
     function onTableSubmit(event) {
         event.preventDefault();
-        history.push("/dashboard");
+        const abortController = new AbortController();
+        async function addTable() {
+            try {
+                await createTable( formData, abortController.signal );
+                setFormData({...INITIAL_FORM_DATA});
+                history.push(`/dashboard`);
+            } catch (error) {
+                setError(error);
+            }
+        }
+        addTable();
     }
 
     function handleTableInputChange(event) {
@@ -17,7 +33,7 @@ function TableForm() {
         });
     }
 
-    function handleCancel(event) {
+    function handleCancel() {
         history.goBack();
     }
     return (
@@ -31,7 +47,7 @@ function TableForm() {
                     <label for="exampleInputPassword1">Capacity</label>
                     <input name="capacity" required min={1} value={formData.capacity} onChange={handleTableInputChange} type="number" className="form-control" id="capacity" placeholder="0"/>
                 </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
+                <button type="submit" className="btn btn-primary mr-3">Submit</button>
                 <button type="button" onClick={handleCancel} className="btn btn-primary">Cancel</button>
             </form>
         </div>
