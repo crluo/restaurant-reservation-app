@@ -17,7 +17,7 @@ function hasValidInput(req, res, next) {
   if (!req.body.data) {
     next({
       status: 400,
-      messge: "data is invalid",
+      message: "data is invalid",
     })
   }
   const input = req.body.data;
