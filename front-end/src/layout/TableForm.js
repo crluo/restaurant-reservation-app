@@ -6,6 +6,7 @@ import ErrorAlert from "./ErrorAlert";
 const INITIAL_FORM_DATA = {
     table_name: "",
     capacity: 0,
+    occupied: "Free",
 }
 function TableForm() {
     const history = useHistory();
@@ -16,7 +17,7 @@ function TableForm() {
         const abortController = new AbortController();
         async function addTable() {
             try {
-                await createTable( formData, abortController.signal );
+                await createTable( {...formData, capacity: Number(formData.capacity)}, abortController.signal );
                 setFormData({...INITIAL_FORM_DATA});
                 history.push(`/dashboard`);
             } catch (error) {

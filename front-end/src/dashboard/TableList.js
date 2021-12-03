@@ -1,16 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { listTables } from "../utils/api";
+import React from "react";
 
-function TableList() {
-    const [tables, setTables] = useState([]);
-    useEffect(() => loadTables, []);
-    async function loadTables() {
-        const abortController = new AbortController();
-        const tablesList = await listTables(abortController.signal);
-        console.log(tablesList);
-        setTables(tablesList);
-        return () => abortController.abort();
-    }
+function TableList({tables}) {
     const tablesTable = (
         <table className="table mt-3">
         <thead>
@@ -18,7 +8,7 @@ function TableList() {
                 <th scope="col">#</th>
                 <th scope="col">Table Name</th>
                 <th scope="col">Capacity</th>
-                <th scope="col">Free?</th>
+                <th scope="col">Occupied/Free</th>
             </tr>
         </thead>
         <tbody>
@@ -28,7 +18,7 @@ function TableList() {
                     <th scope="row">{index + 1}</th>
                     <td>{table.table_name}</td>
                     <td>{table.capacity}</td>
-                    <td>free</td>
+                    <td data-table-id-status={table.table_id}>{table.occupied}</td>
                 </tr>
             )
             })}
