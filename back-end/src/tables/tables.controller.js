@@ -9,16 +9,17 @@ function hasValidInput(req, res, next) {
     })
   }
   const input = req.body.data;
+  let inputErrors = [];
   if (!input.table_name || input.table_name.length <= 1) {
-    next({
-      status: 400,
-      message: "table_name is invalid",
-    })
+    inputErrors.push("table_name is invalid");
   }
   if (!input.capacity || input.capacity < 1 || typeof input.capacity !== "number") {
+    inputErrors.push("capacity is invalid");
+  }
+  if (inputErrors.length) {
     next({
       status: 400,
-      message: "capacity is invalid",
+      message: inputErrors.toString(),
     })
   }
   next();
@@ -33,6 +34,7 @@ async function list(req, res) {
   const tables = await service.list();
   res.json({ data: tables });
 }
+
 module.exports = {
   create: [ hasValidInput, asyncErrorBoundary(create) ],
   list,

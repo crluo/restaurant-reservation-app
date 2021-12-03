@@ -38,6 +38,7 @@ function TableForm() {
     }
     return (
         <div>
+            <ErrorAlert error={error} />
             <form onSubmit={ onTableSubmit }>
                 <div className="form-group">
                     <label for="exampleInputEmail1">Table Name</label>

@@ -3,7 +3,7 @@ import { listTables } from "../utils/api";
 
 function TableList() {
     const [tables, setTables] = useState([]);
-    useEffect(loadTables, [tables]);
+    useEffect(() => loadTables, []);
     async function loadTables() {
         const abortController = new AbortController();
         const tablesList = await listTables(abortController.signal);
