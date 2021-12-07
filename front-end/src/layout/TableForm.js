@@ -8,10 +8,12 @@ const INITIAL_FORM_DATA = {
     capacity: 0,
     occupied: "Free",
 }
+
 function TableForm() {
     const history = useHistory();
     const [ formData, setFormData ] = useState(INITIAL_FORM_DATA);
     const [ error, setError ] = useState(null);
+    
     function onTableSubmit(event) {
         event.preventDefault();
         const abortController = new AbortController();

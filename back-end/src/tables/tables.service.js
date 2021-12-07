@@ -6,12 +6,28 @@ function create(newTable) {
         .then((createdTable) => createdTable[0]);
 }
 
+function read(tableId) {
+    return knex("tables")
+        .select("*")
+        .where({ table_id: tableId })
+        .first();
+}
+
+function update(reservationId, tableId) {
+    return knex("tables")
+        .where({ table_id: tableId })
+        .update("reservation_id", `${reservationId}`);
+}
+
 function list() {
     return knex("tables")
         .select("*")
-        .orderBy("table_name")
+        .orderBy("table_name");
 }
+
 module.exports = {
     create,
-    list,
+    read,
+    update,
+    list,    
 };

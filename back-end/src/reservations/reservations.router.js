@@ -13,4 +13,8 @@ router.route("/")
     .post(controller.create)
     .all(notFound);
 
+router.route("/:reservation_Id")
+    .get(controller.read)
+    .all(notFound);
+
 module.exports = router;
