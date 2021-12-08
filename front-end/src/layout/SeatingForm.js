@@ -25,7 +25,7 @@ function SeatingForm() {
         const abortController = new AbortController();
         async function addSeatToReservation() {
             try {
-                await seatReservation(reservation_id, tableId, abortController.signal)
+                await seatReservation(reservation_id, Number(tableId), abortController.signal)
                 setTableId("");
                 history.push(`/dashboard`);
             } catch (error) {
