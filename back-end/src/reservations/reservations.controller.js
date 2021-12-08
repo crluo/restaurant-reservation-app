@@ -17,7 +17,7 @@ function hasValidInput(req, res, next) {
   if (!req.body.data) {
     next({
       status: 400,
-      messge: "data is invalid",
+      message: "data is invalid",
     })
   }
   const input = req.body.data;
@@ -80,6 +80,27 @@ function validReservationTime(req, res, next) {
   }
   next();
 }
+
+async function reservationExists(req, res, next) {
+  const reservation = await service.read(req.params.reservation_Id);
+  if (reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  }
+  next({
+    status: 404,
+    message: `Reservation does not exist`
+  });
+}
+
+async function create(req, res) {
+  const newReservation = await service.create(req.body.data);
+  res.status(201).json({ data: newReservation });
+}
+
+async function read(req, res) {
+  res.status(200).json({ data: res.locals.reservation })
+}
 /**
  * List handler for reservation resources
  */
@@ -89,12 +110,10 @@ async function list(req, res) {
   res.json({ data: reservations });
 }
 
-async function create(req, res) {
-  const newReservation = await service.create(req.body.data);
-  res.status(201).json({ data: newReservation });
-}
+
 
 module.exports = {
-  list: [ asyncErrorBoundary(list) ],
   create: [ hasValidInput, validReservationTime, asyncErrorBoundary(create) ],
+  read: [ asyncErrorBoundary(reservationExists), asyncErrorBoundary(read) ],
+  list: [ asyncErrorBoundary(list) ],
 };
