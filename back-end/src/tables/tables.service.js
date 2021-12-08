@@ -16,7 +16,10 @@ function read(tableId) {
 function update(reservationId, tableId) {
     return knex("tables")
         .where({ table_id: tableId })
-        .update("reservation_id", `${reservationId}`);
+        .update({
+            reservation_id: `${reservationId}`,
+            occupied: `Occupied`
+        });
 }
 
 function list() {

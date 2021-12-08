@@ -38,29 +38,44 @@ async function tableExists(req, res, next) {
     message: `Table ${req.params.table_id} does not exist`
   });
 }
-
-async function seatingRequirements(req, res, next) {
+async function reservationExists(req, res, next) {
   if (!req.body.data) {
     next({
       status: 400,
       message: "Data is missing"
     });
   }
-  const table = res.locals.table;
   const { reservation_id } = req.body.data;
+  if (!reservation_id) {
+    next({
+      status: 400,
+      message: `reservation_id is missing`
+    })
+  }
   const reservation = await reservationsService.read(reservation_id);
   if (!reservation) {
     next({
       status: 404,
       message: `Reservation ${reservation_id} does not exist`
     });
-  } else if (reservation.people > table.capacity) {
+  }
+  res.locals.reservation = reservation;
+  return next();
+}
+
+function seatingRequirements(req, res, next) {
+  const table = res.locals.table;
+  if (res.locals.reservation.people > table.capacity) {
     next({
       status: 400,
       message: "Table capacity cannot accomodate reservation party size"
     });
+  } else if (table.occupied == "Occupied") {
+    next({
+      status: 400,
+      message: `Table ${table.table_id} is occupied`
+    });
   }
-  res.locals.reservation = reservation;
   next();
 }
 
@@ -81,6 +96,6 @@ async function list(req, res) {
 
 module.exports = {
   create: [ hasValidInput, asyncErrorBoundary(create) ],
-  update: [ asyncErrorBoundary(tableExists), asyncErrorBoundary(seatingRequirements), asyncErrorBoundary(update) ],
+  update: [ asyncErrorBoundary(tableExists), asyncErrorBoundary(reservationExists), seatingRequirements, asyncErrorBoundary(update) ],
   list,
 };
