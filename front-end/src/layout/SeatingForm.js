@@ -11,7 +11,7 @@ function SeatingForm() {
     const [ tables, setTables ] = useState(null);
     const [ error, setError ] = useState(null);
 
-    useEffect(() => fetchTables, []);
+    useEffect(fetchTables, []);
 
     function fetchTables() {
         const abortController = new AbortController();
@@ -36,7 +36,6 @@ function SeatingForm() {
     }
 
     function handleSeatingInputChange(event) {
-        console.log(tableId)
         setTableId(event.target.value);
     }
 
