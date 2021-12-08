@@ -8,10 +8,10 @@ function SeatingForm() {
     const history = useHistory();
     const { reservation_id } = useParams();
     const [ tableId, setTableId ] = useState(null);
-    const [ tables, setTables ] = useState(null);
+    const [ tables, setTables ] = useState([]);
     const [ error, setError ] = useState(null);
 
-    useEffect(() => fetchTables, []);
+    useEffect(fetchTables, []);
 
     function fetchTables() {
         const abortController = new AbortController();
@@ -36,7 +36,6 @@ function SeatingForm() {
     }
 
     function handleSeatingInputChange(event) {
-        console.log(tableId)
         setTableId(event.target.value);
     }
 
