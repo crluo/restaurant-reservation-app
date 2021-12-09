@@ -102,7 +102,7 @@ async function update(req, res) {
 async function destroy(req, res) {
   const { table_id, reservation_id } = res.locals.table;
   await tablesService.destroy(table_id);
-  res.sendStatus(200);
+  res.sendStatus(204);
 }
 
 async function list(req, res) {

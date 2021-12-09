@@ -10,11 +10,11 @@ function TableList({tables, loadDashboard}) {
         const abortController = new AbortController();
         if (confirmation) {
             async function finishTable(table_id) {
-                await clearTable(table_id, abortController.signal)
-                //loadDashboard();
+                const result = await clearTable(table_id, abortController.signal);
+                console.log("reached")
+                history.go();
             }
             finishTable(table_id);
-            loadDashboard();
         }
     }
     const tablesTable = (

@@ -82,15 +82,33 @@ function validReservationTime(req, res, next) {
 }
 
 async function reservationExists(req, res, next) {
-  const reservation = await service.read(req.params.reservation_Id);
+  const reservation = await service.read(req.params.reservation_id);
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
   }
   next({
     status: 404,
-    message: `Reservation does not exist`
+    message: `Reservation ${reservation.reservation_id} does not exist`
   });
+}
+
+function validStatus(req, res, next) {
+  const { status } = req.body.data;
+  if (!status) {
+    next({
+      status: 400,
+      message: `Status is unknown`
+    });
+  }
+  if (status === "finished") {
+    next({
+      status: 400,
+      message: `This reservation is finished`
+    });
+  }
+  res.locals.status = status;
+  next();
 }
 
 async function create(req, res) {
@@ -100,6 +118,12 @@ async function create(req, res) {
 
 async function read(req, res) {
   res.status(200).json({ data: res.locals.reservation })
+}
+
+async function updateStatus(req, res) {
+  const { reservation_id } = req.params;
+  const updatedReservation = await service.updateStatus(reservation_id, res.locals.status);
+  res.status(200).json({ data: updatedReservation });
 }
 /**
  * List handler for reservation resources
@@ -115,5 +139,6 @@ async function list(req, res) {
 module.exports = {
   create: [ hasValidInput, validReservationTime, asyncErrorBoundary(create) ],
   read: [ asyncErrorBoundary(reservationExists), asyncErrorBoundary(read) ],
+  updateStatus: [ asyncErrorBoundary(reservationExists), validStatus, asyncErrorBoundary(updateStatus) ],
   list: [ asyncErrorBoundary(list) ],
 };
