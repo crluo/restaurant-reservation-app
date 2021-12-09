@@ -25,7 +25,7 @@ function ReservationsList({ reservations }){
                   <td>{reservation.reservation_date}</td>
                   <td>{reservation.reservation_time}</td>
                   <td>{reservation.people}</td>
-                  <td><Link to={`/reservations/${reservation.reservation_id}/seat`} type="button" class="btn btn-outline-primary btn-sm">Seat</Link></td>
+                  <td><a href={`/reservations/${reservation.reservation_id}/seat`} type="button" class="btn btn-outline-primary btn-sm">Seat</a></td>
                 </tr>
               )
             })}

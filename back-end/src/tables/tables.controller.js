@@ -1,7 +1,6 @@
 const reservationsService = require("../reservations/reservations.service");
 const tablesService = require("./tables.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
-const { table } = require("../db/connection");
 
 function hasValidInput(req, res, next) {
   if (!req.body.data) {
@@ -70,11 +69,21 @@ function seatingRequirements(req, res, next) {
       status: 400,
       message: "Table capacity cannot accomodate reservation party size"
     });
-  } else if (table.occupied == "Occupied") {
+  } else if (table.reservation_id) {
     next({
       status: 400,
       message: `Table ${table.table_id} is occupied`
     });
+  }
+  next();
+}
+
+function isTableOccupied(req, res, next) {
+  if (!res.locals.table.reservation_id) {
+    next({
+      status: 400,
+      message: `table ${res.locals.table.table_id} is not occupied`
+    })
   }
   next();
 }
@@ -89,6 +98,12 @@ async function update(req, res) {
   res.json({ data: updatedTable });
 }
 
+async function destroy(req, res) {
+  const { table_id } = res.locals.table;
+  const updatedTable = await tablesService.destroy(table_id);
+  res.status(200).json( { data: updatedTable });
+}
+
 async function list(req, res) {
   const tables = await tablesService.list();
   res.json({ data: tables });
@@ -97,5 +112,6 @@ async function list(req, res) {
 module.exports = {
   create: [ hasValidInput, asyncErrorBoundary(create) ],
   update: [ asyncErrorBoundary(tableExists), asyncErrorBoundary(reservationExists), seatingRequirements, asyncErrorBoundary(update) ],
+  destroy: [ asyncErrorBoundary(tableExists), isTableOccupied, asyncErrorBoundary(destroy) ],
   list,
 };
