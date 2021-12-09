@@ -22,6 +22,14 @@ function update(reservationId, tableId) {
         });
 }
 
+function destroy(tableId) {
+    return knex("tables")
+        .where({ table_id: tableId })
+        .update({
+            reservation_id: null,
+            occupied: `Free`
+        })
+}
 function list() {
     return knex("tables")
         .select("*")
@@ -32,5 +40,6 @@ module.exports = {
     create,
     read,
     update,
+    destroy,
     list,    
 };

@@ -79,6 +79,16 @@ function seatingRequirements(req, res, next) {
   next();
 }
 
+function isTableOccupied(req, res, next) {
+  if (!res.locals.table.occupied || res.locals.table.occupied === "Free") {
+    next({
+      status: 400,
+      message: `table ${res.locals.table.table_id} is not occupied`
+    })
+  }
+  next();
+}
+
 async function create(req, res) {
   const newTable = await tablesService.create(req.body.data);
   res.status(201).json({ data: newTable });
@@ -89,6 +99,12 @@ async function update(req, res) {
   res.json({ data: updatedTable });
 }
 
+async function destroy(req, res) {
+  const { table_id, reservation_id } = res.locals.table;
+  await tablesService.destroy(table_id);
+  res.sendStatus(200);
+}
+
 async function list(req, res) {
   const tables = await tablesService.list();
   res.json({ data: tables });
@@ -97,5 +113,6 @@ async function list(req, res) {
 module.exports = {
   create: [ hasValidInput, asyncErrorBoundary(create) ],
   update: [ asyncErrorBoundary(tableExists), asyncErrorBoundary(reservationExists), seatingRequirements, asyncErrorBoundary(update) ],
+  destroy: [ asyncErrorBoundary(tableExists), isTableOccupied, asyncErrorBoundary(destroy) ],
   list,
 };
