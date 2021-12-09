@@ -14,7 +14,7 @@ function ReservationForm() {
         const abortController = new AbortController();
         async function addReservation() {
             try {
-                const newReservation = await createReservation( {...formData, people: Number(formData.people)}, abortController.signal );
+                const newReservation = await createReservation( {...formData, people: Number(formData.people), status: "booked"}, abortController.signal );
                 setFormData({});
                 history.push(`/dashboard?date=${formatReservationDate(newReservation).reservation_date}`);
             } catch (error) {

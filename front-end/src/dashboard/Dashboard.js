@@ -17,7 +17,7 @@ function Dashboard({ date }) {
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
 
-  useEffect(loadDashboard, [date]);
+  useEffect(loadDashboard, [ date ]);
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -47,7 +47,7 @@ function Dashboard({ date }) {
       </div>
       <ErrorAlert error={reservationsError} />
       {reservations.length ? <ReservationsList reservations={reservations}/>:(<p className="mt-4">No reservations were found</p>)}
-      <TableList tables={tables}/>
+      <TableList tables={tables} loadDashboard={loadDashboard}/>
     </main>
   );
 }

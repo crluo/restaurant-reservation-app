@@ -13,6 +13,7 @@ function ReservationsList({ reservations }){
               <th scope="col">Time</th>
               <th scope="col">Party Size</th>
               <th scope="col">Status</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -25,6 +26,7 @@ function ReservationsList({ reservations }){
                   <td>{reservation.reservation_date}</td>
                   <td>{reservation.reservation_time}</td>
                   <td>{reservation.people}</td>
+                  <td>{reservation.status}</td>
                   <td><Link to={`/reservations/${reservation.reservation_id}/seat`} type="button" class="btn btn-outline-primary btn-sm">Seat</Link></td>
                 </tr>
               )
