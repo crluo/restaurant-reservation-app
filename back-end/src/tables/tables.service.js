@@ -18,17 +18,13 @@ function update(reservationId, tableId) {
         .where({ table_id: tableId })
         .update({
             reservation_id: `${reservationId}`,
-            occupied: `Occupied`
         });
 }
 
 function destroy(tableId) {
     return knex("tables")
         .where({ table_id: tableId })
-        .update({
-            reservation_id: null,
-            occupied: `Free`
-        })
+        .update({ reservation_id: null })
 }
 function list() {
     return knex("tables")
