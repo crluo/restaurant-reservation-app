@@ -1,19 +1,18 @@
-import React, { useState } from "react";
-import { clearTable, listTables } from "../utils/api";
+import React from "react";
+import { useHistory } from "react-router-dom";
+import { clearTable } from "../utils/api";
 
 function TableList({tables}) {
-    const [ error, setError ] = useState(null);
-    async function finishTable(table_id) {
+    const history = useHistory();
+    function handleFinish(table_id) {
         let confirmation = window.confirm("Is this table ready to seat new guests? This cannot be undone.")
         const abortController = new AbortController();
         if (confirmation) {
-            console.log("this works")
-            // try {
-            //     await clearTable(table_id, abortController.signal)
-            //     await listTables();
-            // } catch (error) {
-            //     setError(error);
-            // }
+            async function finishTable(table_id) {
+                const result = await clearTable(table_id, abortController.signal)
+                history.go();
+            }
+            finishTable(table_id);
         }
     }
     const tablesTable = (
@@ -35,7 +34,7 @@ function TableList({tables}) {
                     <td>{table.table_name}</td>
                     <td>{table.capacity}</td>
                     <td data-table-id-status={table.table_id}>{table.occupied}</td>
-                    {table.occupied === "Occupied" ? (<td><button type="button" className="btn btn-primary" onClick={() => finishTable(table.table_id)}>Finish</button></td>):(<td></td>)}
+                    {table.occupied === "Occupied" ? (<td><button data-table-id-finish={table.table_id} type="button" className="btn btn-primary" onClick={() => handleFinish(table.table_id)}>Finish</button></td>):(<td></td>)}
                 </tr>
             )
             })}

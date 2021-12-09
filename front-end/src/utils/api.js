@@ -106,12 +106,11 @@ export async function seatReservation(reservationId, tableId, signal) {
   return await fetchJson(url, options);
 }
 
-export async function clearTable(tableId, signal) {
-  const url = new URL(`${API_BASE_URL}/tables/${tableId}/seat`);
+export async function clearTable(table_id, signal) {
+  const url = new URL(`${API_BASE_URL}/tables/${table_id}/seat`);
   const options = {
     method: "DELETE",
     headers,
-    body: JSON.stringify({ data: { reservation_id: "" } } ),
     signal,
   };
   return await fetchJson(url, options);
