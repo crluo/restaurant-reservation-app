@@ -82,15 +82,34 @@ function validReservationTime(req, res, next) {
 }
 
 async function reservationExists(req, res, next) {
-  const reservation = await service.read(req.params.reservation_Id);
+  const reservation = await service.read(req.params.reservation_id);
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
   }
   next({
     status: 404,
-    message: `Reservation does not exist`
+    message: `Reservation ${req.params.reservation_id} does not exist`
   });
+}
+
+function validStatus(req, res, next) {
+  const { status } = req.body.data;
+  const validInput = ["booked", "seated", "finished", "cancelled"];
+  if (!validInput.includes(status)) {
+    next({
+      status: 400,
+      message: `Status ${status} is unknown`
+    });
+  }
+  if (res.locals.reservation.status === "finished") {
+    next({
+      status: 400,
+      message: `This reservation is finished`
+    });
+  }
+  res.locals.status = status;
+  next();
 }
 
 async function create(req, res) {
@@ -110,10 +129,16 @@ async function list(req, res) {
   res.json({ data: reservations });
 }
 
+async function updateStatus(req, res) {
+  const { reservation_id } = req.params;
+  const updatedReservation = await service.updateStatus(reservation_id, res.locals.status);
+  res.status(200).json({ data: updatedReservation });
+}
 
 
 module.exports = {
   create: [ hasValidInput, validReservationTime, asyncErrorBoundary(create) ],
   read: [ asyncErrorBoundary(reservationExists), asyncErrorBoundary(read) ],
   list: [ asyncErrorBoundary(list) ],
+  updateStatus: [ asyncErrorBoundary(reservationExists), validStatus, asyncErrorBoundary(updateStatus) ],
 };
