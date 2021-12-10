@@ -15,6 +15,7 @@ function ReservationForm() {
         async function addReservation() {
             try {
                 const newReservation = await createReservation( {...formData, people: Number(formData.people), status: "booked"}, abortController.signal );
+                console.log(newReservation)
                 setFormData({});
                 history.push(`/dashboard?date=${formatReservationDate(newReservation).reservation_date}`);
             } catch (error) {
