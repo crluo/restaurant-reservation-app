@@ -115,3 +115,14 @@ export async function clearTable(table_id, signal) {
   };
   return await fetchJson(url, options);
 }
+
+export async function updateReservationStatus(reservationId, newStatus, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations/${reservationId}/status`);
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({ data: { status: newStatus }}),
+    signal,    
+  }
+  return await fetchJson(url, options);
+}

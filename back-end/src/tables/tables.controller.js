@@ -37,6 +37,7 @@ async function tableExists(req, res, next) {
     message: `Table ${req.params.table_id} does not exist`
   });
 }
+
 async function reservationExists(req, res, next) {
   if (!req.body.data) {
     next({
@@ -88,19 +89,32 @@ function isTableOccupied(req, res, next) {
   next();
 }
 
+function isReservationSeated(req, res, next) {
+  if (res.locals.reservation.status === "seated") {
+    next({
+      status: 400,
+      message: `Reservation is already seated`
+    });
+  }
+  next();
+}
+
 async function create(req, res) {
   const newTable = await tablesService.create(req.body.data);
   res.status(201).json({ data: newTable });
 }
 
 async function update(req, res) {
+  const { reservation_id } = req.body.data;
   const updatedTable = await tablesService.update(res.locals.reservation.reservation_id, res.locals.table.table_id);
-  res.json({ data: updatedTable });
+  await reservationsService.updateStatus(reservation_id, "seated")
+  res.status(200).json({ data: updatedTable });
 }
 
 async function destroy(req, res) {
-  const { table_id } = res.locals.table;
+  const { table_id, reservation_id } = res.locals.table;
   const updatedTable = await tablesService.destroy(table_id);
+  await reservationsService.updateStatus(reservation_id, "finished");
   res.status(200).json( { data: updatedTable });
 }
 
@@ -111,7 +125,7 @@ async function list(req, res) {
 
 module.exports = {
   create: [ hasValidInput, asyncErrorBoundary(create) ],
-  update: [ asyncErrorBoundary(tableExists), asyncErrorBoundary(reservationExists), seatingRequirements, asyncErrorBoundary(update) ],
+  update: [ asyncErrorBoundary(tableExists), asyncErrorBoundary(reservationExists), isReservationSeated, seatingRequirements, asyncErrorBoundary(update) ],
   destroy: [ asyncErrorBoundary(tableExists), isTableOccupied, asyncErrorBoundary(destroy) ],
   list,
 };

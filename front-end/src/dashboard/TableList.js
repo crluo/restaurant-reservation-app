@@ -4,12 +4,17 @@ import { clearTable } from "../utils/api";
 
 function TableList({tables}) {
     const history = useHistory();
-    async function handleFinish(table_id) {
+    async function handleFinish(table_id, reservation_id) {
         let confirmation = window.confirm("Is this table ready to seat new guests? This cannot be undone.")
         const abortController = new AbortController();
         if (confirmation) {
-            await clearTable(table_id, abortController.signal)
-            history.go();
+            try{
+                await clearTable(table_id, abortController.signal);
+                history.go();
+            } catch (error) {
+                console.error(error)
+            }
+            
         }
     }
     const tablesTable = (
@@ -26,12 +31,12 @@ function TableList({tables}) {
         <tbody>
             {tables.map((table, index) => {
                 return (
-                    <tr>
+                    <tr key={index}>
                         <th scope="row">{index + 1}</th>
                         <td>{table.table_name}</td>
                         <td>{table.capacity}</td>
                         <td data-table-id-status={table.table_id}>{table.reservation_id ? "Occupied" : "Free"}</td>
-                        {table.reservation_id ? (<td><button data-table-id-finish={table.table_id} type="button" className="btn btn-primary" onClick={() => handleFinish(table.table_id)}>Finish</button></td>):(<td></td>)}
+                        {table.reservation_id ? (<td><button data-table-id-finish={table.table_id} type="button" className="btn btn-primary" onClick={() => handleFinish(table.table_id, table.reservation_id)}>Finish</button></td>):(<td></td>)}
                     </tr>
                 )
             })}
