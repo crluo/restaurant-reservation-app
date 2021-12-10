@@ -126,15 +126,26 @@ async function create(req, res) {
 async function read(req, res) {
   res.status(200).json({ data: res.locals.reservation })
 }
+
+async function update(req, res) {
+  const { reservation_id } = req.params;
+  const reservation = {
+    ...req.body.data,
+    reservation_id: reservation_id,
+  }
+  const updatedReservation = await service.update(reservation);
+  res.status(200).json({ data: updatedReservation })
+}
 /**
  * List handler for reservation resources
  */
 async function list(req, res) {
   const reservation_date = req.query.date;
+  const filter = [ "finished", "cancelled" ];
   const mobile = req.query.mobile_number;
   if (reservation_date) {
     const reservations = await service.list(reservation_date);
-    const activeReservations = reservations.filter((reservation) => reservation.status != "finished");
+    const activeReservations = reservations.filter((reservation) => !filter.includes(reservation.status));
     res.json({ data: activeReservations });
   } else if (mobile) {
     const reservations = await service.search(mobile);
@@ -152,6 +163,7 @@ async function updateStatus(req, res) {
 module.exports = {
   create: [ hasValidInput, validReservationTime, asyncErrorBoundary(create) ],
   read: [ asyncErrorBoundary(reservationExists), asyncErrorBoundary(read) ],
+  update: [ hasValidInput, asyncErrorBoundary(reservationExists), asyncErrorBoundary(update) ],
   list: [ asyncErrorBoundary(list) ],
   updateStatus: [ asyncErrorBoundary(reservationExists), validStatus, asyncErrorBoundary(updateStatus) ],
 };
