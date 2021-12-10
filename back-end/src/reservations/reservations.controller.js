@@ -163,7 +163,7 @@ async function updateStatus(req, res) {
 module.exports = {
   create: [ hasValidInput, validReservationTime, asyncErrorBoundary(create) ],
   read: [ asyncErrorBoundary(reservationExists), asyncErrorBoundary(read) ],
-  update: [ hasValidInput, asyncErrorBoundary(reservationExists), asyncErrorBoundary(update) ],
+  update: [ hasValidInput, validReservationTime, asyncErrorBoundary(reservationExists), asyncErrorBoundary(update) ],
   list: [ asyncErrorBoundary(list) ],
   updateStatus: [ asyncErrorBoundary(reservationExists), validStatus, asyncErrorBoundary(updateStatus) ],
 };
