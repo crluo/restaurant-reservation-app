@@ -25,7 +25,8 @@ function ReservationsList({ reservations }){
                   <td>{reservation.reservation_date}</td>
                   <td>{reservation.reservation_time}</td>
                   <td>{reservation.people}</td>
-                  <td><a href={`/reservations/${reservation.reservation_id}/seat`} type="button" class="btn btn-outline-primary btn-sm">Seat</a></td>
+                  <td data-reservation-id-status={reservation.reservation_id}>{reservation.status}</td>
+                  {reservation.status === "booked" ? (<td><a href={`/reservations/${reservation.reservation_id}/seat`} type="button" class="btn btn-outline-primary btn-sm">Seat</a></td>) : (<td>seated</td>)}
                 </tr>
               )
             })}

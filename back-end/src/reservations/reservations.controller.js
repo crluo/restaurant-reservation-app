@@ -49,6 +49,12 @@ function hasValidInput(req, res, next) {
       message: `people is not a number`,
     })
   }
+  if ( input.status === "seated" || input.status === "finished") {
+    next({
+      status: 400,
+      message: "status cannot be seated or finished"
+    });
+  }
   next();
 }
 
