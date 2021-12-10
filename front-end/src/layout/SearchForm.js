@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import ReservationsList from "../dashboard/ReservationsList";
-import { findReservations } from "../utils/api";
+import { listReservations } from "../utils/api";
 
 function SearchForm() {
     const [ reservations, setReservations ] = useState([]);
     const [ phoneNumber, setPhoneNumber ] = useState("");
 
-    function handleSearch(event) {
+    async function handleSearch(event) {
         event.preventDefault();
         const abortController = new AbortController();
-        setPhoneNumber(phoneNumber.replace(/\D/g,''));
-        findReservations(phoneNumber, abortController.signal).then(setReservations);
+        try {
+            const reservationsList = await listReservations({ mobile_number: phoneNumber }, abortController.signal);
+            setReservations(reservationsList);
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     function handleInputChange(event) {
@@ -20,10 +24,10 @@ function SearchForm() {
         <div>
             <form onSubmit={handleSearch}>
                 <label htmlFor="search-prompt">Enter a customer's phone number</label>
-                <input type="text" value={phoneNumber} onChange={handleInputChange} className="form-control" id="mobile_number"/>
+                <input type="text" name="mobile_number" value={phoneNumber} onChange={handleInputChange} className="form-control" id="mobile_number"/>
                 <button type="submit" className="btn-primary btn">Find</button>
             </form>
-            <ReservationsList reservations={reservations}/>
+            {reservations.length ? <ReservationsList reservations={reservations}/> : <p>No reservations found</p>}
         </div>
         
     )
