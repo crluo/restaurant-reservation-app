@@ -46,7 +46,7 @@ function EditReservation() {
 
     return (
         <div>
-            <h2>Edit Reservation</h2>
+            <h2 className="mt-3">Edit Reservation</h2>
             <ReservationForm formData={formData} setFormData={setFormData} error={error} setError={setError} submitHandler={handleEditReservationSubmit}/>
         </div>
     )

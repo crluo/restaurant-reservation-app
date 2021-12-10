@@ -13,7 +13,7 @@ function ErrorAlert({ error }) {
     error && (
       <div className="alert alert-danger m-2">
         Please fix the following errors: 
-        <ul className="mt-3">{error.message.split(",").map((message) => <li>{message}</li>)}</ul>
+        <ul className="mt-3">{error.message.split(",").map((message) => <li key={message}>{message}</li>)}</ul>
       </div>
     )
   );

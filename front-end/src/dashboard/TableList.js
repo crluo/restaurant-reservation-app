@@ -31,7 +31,7 @@ function TableList({tables}) {
         <tbody>
             {tables.map((table, index) => {
                 return (
-                    <tr key={index}>
+                    <tr key={table.table_id}>
                         <th scope="row">{index + 1}</th>
                         <td>{table.table_name}</td>
                         <td>{table.capacity}</td>
