@@ -1,27 +1,32 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
-import { createReservation } from "../utils/api";
+import { createReservation, updateReservation } from "../utils/api";
 import formatReservationDate from "../utils/format-reservation-date"
 import ErrorAlert from "./ErrorAlert";
 
-function ReservationForm() {
+function ReservationForm({ reservationId, formData, setFormData, error, setError, isNew }) {
     const history = useHistory();
-    const [ formData, setFormData ] = useState({})
-    const [ error, setError ] = useState(null);
 
-    function handleReservationSubmit(event) {
+    async function handleReservationSubmit(event) {
         event.preventDefault();
         const abortController = new AbortController();
-        async function addReservation() {
+        if (isNew) {
             try {
                 const newReservation = await createReservation( {...formData, people: Number(formData.people), status: "booked"}, abortController.signal );
-                setFormData({});
+                setFormData(formData);
                 history.push(`/dashboard?date=${formatReservationDate(newReservation).reservation_date}`);
             } catch (error) {
                 setError(error);
             }
+        } else if (!isNew) {
+            // edit reservation
+            try {
+                await updateReservation( reservationId, {...formData, people: Number(formData.people), status: "booked"}, abortController.signal )
+                setFormData(formData)
+            } catch (error) {
+                setError(error);
+            }
         }
-        addReservation();
     }
 
     function handleReservationInputChange(event) {
@@ -40,27 +45,27 @@ function ReservationForm() {
             <ErrorAlert error={error} />
             <form onSubmit={ handleReservationSubmit }>
                 <div className="form-group">
-                    <label for="exampleInputEmail1">First Name</label>
+                    <label htmlFor="first-name">First Name</label>
                     <input name="first_name" required value={formData.first_name} onChange={handleReservationInputChange} type="text" className="form-control" id="first_name" aria-describedby="emailHelp" placeholder="John"/>
                 </div>
                 <div className="form-group">
-                    <label for="exampleInputPassword1">Last Name</label>
+                    <label htmlFor="last-name">Last Name</label>
                     <input name="last_name" required value={formData.last_name} onChange={handleReservationInputChange} type="text" className="form-control" id="last_name" placeholder="Doe"/>
                 </div>
                 <div className="form-group">
-                    <label for="exampleInputPassword1">Mobile Number</label>
+                    <label htmlFor="mobile-number">Mobile Number</label>
                     <input name="mobile_number" required value={formData.mobile_number} onChange={handleReservationInputChange} type="text" className="form-control" id="mobile_number" placeholder="555-555-5555"/>
                 </div>
                 <div className="form-group">
-                    <label for="exampleInputPassword1">Reservation Date</label>
+                    <label htmlFor="reservation-date">Reservation Date</label>
                     <input name="reservation_date" required value={formData.reservation_date} onChange={handleReservationInputChange} type="date" className="form-control" id="reservation_date"/>
                 </div>
                 <div className="form-group">
-                    <label for="exampleInputPassword1">Reservation Time</label>
+                    <label htmlFor="reservation-time">Reservation Time</label>
                     <input name="reservation_time" required value={formData.reservation_time} onChange={handleReservationInputChange} type="time" className="form-control" id="reservation_time"/>
                 </div>
                 <div className="form-group">
-                    <label for="exampleInputPassword1">Party Size</label>
+                    <label htmlFor="people">Party Size</label>
                     <input name="people" required min={1} value={formData.people} onChange={handleReservationInputChange} type="number" className="form-control" id="people" placeholder="0"/>
                 </div>
                 <button type="submit" className="btn btn-primary">Submit</button>
