@@ -141,10 +141,11 @@ async function update(req, res) {
  */
 async function list(req, res) {
   const reservation_date = req.query.date;
+  const filter = [ "finished", "cancelled" ];
   const mobile = req.query.mobile_number;
   if (reservation_date) {
     const reservations = await service.list(reservation_date);
-    const activeReservations = reservations.filter((reservation) => reservation.status != "finished");
+    const activeReservations = reservations.filter((reservation) => !filter.includes(reservation.status));
     res.json({ data: activeReservations });
   } else if (mobile) {
     const reservations = await service.search(mobile);

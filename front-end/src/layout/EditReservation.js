@@ -1,27 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { readReservation } from "../utils/api";
-import ErrorAlert from "./ErrorAlert";
+import { useParams, useHistory } from "react-router-dom";
+import { readReservation, updateReservation } from "../utils/api";
+import formatReservationDate from "../utils/format-reservation-date"
 import ReservationForm from "./ReservationForm";
 
 function EditReservation() {
+    const INITIAL_FORM_DATA = {
+            first_name: "",
+            last_name: "",
+            mobile_number: "",
+            reservation_date: "",
+            reservation_time: "",
+            people: "",
+    }
+    const history = useHistory();
     const [ error, setError ] = useState(null);
     const { reservation_id } = useParams();
-    const [ reservation, setReservation ] = useState(null);
-    const [ formData, setFormData ] = useState({});
+    const [ formData, setFormData ] = useState(INITIAL_FORM_DATA);
 
-    useEffect(() => fetchReservation, [ reservation_id ]);
+    useEffect(() => fetchReservation(), [ reservation_id ]);
 
     async function fetchReservation() {
         const abortController = new AbortController();
-        const foundReservation = await readReservation(reservation_id, abortController.signal);
-        setReservation(foundReservation);
+        try {
+            const foundReservation = await readReservation(reservation_id, abortController.signal);
+            if (foundReservation) {
+                const { first_name, last_name, mobile_number, reservation_date, reservation_time, people } = foundReservation;
+                setFormData({ first_name, last_name, mobile_number, reservation_date, reservation_time, people });
+            }
+        } catch (error) {
+            setError(error);
+        }
+    }
+
+    async function handleEditReservationSubmit(event) {
+        event.preventDefault();
+        const abortController = new AbortController();
+        try {
+            const updatedReservation = await updateReservation( reservation_id, {...formData, people: Number(formData.people), status: "booked"}, abortController.signal )
+            history.push(`/dashboard?date=${formatReservationDate(updatedReservation).reservation_date}`);
+        } catch (error) {
+            setError(error);
+        }
     }
 
     return (
         <div>
-            <ErrorAlert error={error} />
-            <ReservationForm reservationId={reservation.reservation_id} formData={formData} setFormData={setFormData} error={error} setError={setError} isNew={false}/>
+            <h2>Edit Reservation</h2>
+            <ReservationForm formData={formData} setFormData={setFormData} error={error} setError={setError} submitHandler={handleEditReservationSubmit}/>
         </div>
     )
 }

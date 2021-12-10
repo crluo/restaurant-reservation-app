@@ -1,33 +1,9 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { createReservation, updateReservation } from "../utils/api";
-import formatReservationDate from "../utils/format-reservation-date"
 import ErrorAlert from "./ErrorAlert";
 
-function ReservationForm({ reservationId, formData, setFormData, error, setError, isNew }) {
+function ReservationForm({ formData, setFormData, error, submitHandler }) {
     const history = useHistory();
-
-    async function handleReservationSubmit(event) {
-        event.preventDefault();
-        const abortController = new AbortController();
-        if (isNew) {
-            try {
-                const newReservation = await createReservation( {...formData, people: Number(formData.people), status: "booked"}, abortController.signal );
-                setFormData(formData);
-                history.push(`/dashboard?date=${formatReservationDate(newReservation).reservation_date}`);
-            } catch (error) {
-                setError(error);
-            }
-        } else if (!isNew) {
-            // edit reservation
-            try {
-                await updateReservation( reservationId, {...formData, people: Number(formData.people), status: "booked"}, abortController.signal )
-                setFormData(formData)
-            } catch (error) {
-                setError(error);
-            }
-        }
-    }
 
     function handleReservationInputChange(event) {
         setFormData({
@@ -43,18 +19,18 @@ function ReservationForm({ reservationId, formData, setFormData, error, setError
     return (
         <div>
             <ErrorAlert error={error} />
-            <form onSubmit={ handleReservationSubmit }>
+            <form onSubmit={ submitHandler }>
                 <div className="form-group">
                     <label htmlFor="first-name">First Name</label>
-                    <input name="first_name" required value={formData.first_name} onChange={handleReservationInputChange} type="text" className="form-control" id="first_name" aria-describedby="emailHelp" placeholder="John"/>
+                    <input name="first_name" required value={formData.first_name} onChange={handleReservationInputChange} type="text" className="form-control" id="first_name" aria-describedby="emailHelp" placeholder={formData.first_name}/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="last-name">Last Name</label>
-                    <input name="last_name" required value={formData.last_name} onChange={handleReservationInputChange} type="text" className="form-control" id="last_name" placeholder="Doe"/>
+                    <input name="last_name" required value={formData.last_name} onChange={handleReservationInputChange} type="text" className="form-control" id="last_name" placeholder={formData.last_name}/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="mobile-number">Mobile Number</label>
-                    <input name="mobile_number" required value={formData.mobile_number} onChange={handleReservationInputChange} type="text" className="form-control" id="mobile_number" placeholder="555-555-5555"/>
+                    <input name="mobile_number" required value={formData.mobile_number} onChange={handleReservationInputChange} type="text" className="form-control" id="mobile_number" placeholder={formData.mobile_number}/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="reservation-date">Reservation Date</label>
