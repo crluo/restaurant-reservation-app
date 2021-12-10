@@ -49,7 +49,8 @@ function SeatingForm() {
                 <div className="form-group">
                     <label for="exampleInputEmail1">Table Number</label>
                     <select name="table_id" onChange={handleSeatingInputChange} className="form-control" id="table_id">
-                        {tables ? tables.map((table, index) => <option key={index} value={table.table_id}>{table.table_name} - {table.capacity}</option>) : null}
+                        <option>Please select a table</option>
+                        {tables ? tables.map((table, index) => <option key={table.table_id} value={table.table_id}>{table.table_name} - {table.capacity}</option>) : null}
                     </select>
                 </div>
                 <button type="submit" className="btn btn-primary mr-3">Submit</button>
