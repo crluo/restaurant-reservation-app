@@ -131,8 +131,15 @@ async function read(req, res) {
  */
 async function list(req, res) {
   const reservation_date = req.query.date;
-  const reservations = await service.list(reservation_date);
-  res.json({ data: reservations });
+  const mobile = req.query.mobile_number;
+  if (reservation_date) {
+    const reservations = await service.list(reservation_date);
+    const activeReservations = reservations.filter((reservation) => reservation.status != "finished");
+    res.json({ data: activeReservations });
+  } else if (mobile) {
+    const reservations = await service.search(mobile);
+    res.json({ data: reservations });
+  }
 }
 
 async function updateStatus(req, res) {
