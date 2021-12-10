@@ -136,9 +136,7 @@ async function update(req, res) {
   const updatedReservation = await service.update(reservation);
   res.status(200).json({ data: updatedReservation })
 }
-/**
- * List handler for reservation resources
- */
+
 async function list(req, res) {
   const reservation_date = req.query.date;
   const filter = [ "finished", "cancelled" ];
