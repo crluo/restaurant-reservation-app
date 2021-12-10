@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createReservation } from "../utils/api";
 import formatReservationDate from "../utils/format-reservation-date"
-import ReservationForm from "./ReservationForm";
+import ReservationForm from "../forms/ReservationForm";
 
 function CreateReservation() {
     const history = useHistory();

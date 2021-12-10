@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { readReservation, updateReservation } from "../utils/api";
 import formatReservationDate from "../utils/format-reservation-date"
-import ReservationForm from "./ReservationForm";
+import ReservationForm from "../forms/ReservationForm";
 
 function EditReservation() {
     const INITIAL_FORM_DATA = {
