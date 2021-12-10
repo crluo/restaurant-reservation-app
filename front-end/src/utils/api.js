@@ -68,6 +68,11 @@ export async function listReservations(params, signal) {
     .then(formatReservationTime);
 }
 
+/**
+ * Creates a new reservation
+ * @param {Object} reservation 
+ * @returns a promise that resolves to the newly created reservation
+ */
 export async function createReservation(reservation, signal) {
   const url = new URL(`${API_BASE_URL}/reservations`);
   const options = {
@@ -79,6 +84,11 @@ export async function createReservation(reservation, signal) {
   return await fetchJson(url, options);
 }
 
+/**
+ * Retrieves the reservation associated with reservationId
+ * @param {String} reservationId 
+ * @returns promise that resolves to found reservation
+ */
 export async function readReservation(reservationId, signal) {
   const url = `${API_BASE_URL}/reservations/${reservationId}`; 
   const options = { 
@@ -91,6 +101,12 @@ export async function readReservation(reservationId, signal) {
     .then(formatReservationTime);
 }
 
+/**
+ * Updates existing reservation 
+ * @param {String} reservationId 
+ * @param {Object} updatedReservation 
+ * @returns promise that resolves to updated reservation
+ */
 export async function updateReservation(reservationId, updatedReservation, signal) {
   const url = new URL(`${API_BASE_URL}/reservations/${reservationId}`);
   const options = {
@@ -102,11 +118,20 @@ export async function updateReservation(reservationId, updatedReservation, signa
   return await fetchJson(url, options);
 }
 
+/**
+ * Lists all tables
+ * @returns promise that resolves to array of tables
+ */
 export async function listTables(signal) {
   const url = new URL(`${API_BASE_URL}/tables`);
   return await fetchJson(url, { headers, signal }, []);
 }
 
+/**
+ * Creates a new table free to seat a reservation
+ * @param {Object} table 
+ * @returns promise that resolves to new table created
+ */
 export async function createTable(table, signal) {
   const url = new URL(`${API_BASE_URL}/tables`);
   const options = {
@@ -118,6 +143,12 @@ export async function createTable(table, signal) {
   return await fetchJson(url, options);
 }
 
+/**
+ * Seats a reservation at specified table
+ * @param {String} reservationId reservation to seat
+ * @param {String} tableId to seat reservation
+ * @returns 200 status with updated table
+ */
 export async function seatReservation(reservationId, tableId, signal) {
   const url = new URL(`${API_BASE_URL}/tables/${tableId}/seat`);
   const options = {
@@ -129,6 +160,10 @@ export async function seatReservation(reservationId, tableId, signal) {
   return await fetchJson(url, options);
 }
 
+/**
+ * Clears a table to be ready for a new reservation
+ * @param {String} table_id to clear
+ */
 export async function clearTable(table_id, signal) {
   const url = new URL(`${API_BASE_URL}/tables/${table_id}/seat`);
   const options = {
@@ -139,6 +174,12 @@ export async function clearTable(table_id, signal) {
   return await fetchJson(url, options);
 }
 
+/**
+ * Updates a reservation's status
+ * @param {String} reservationId reservation to update
+ * @param {String} newStatus status to update reservation with
+ * @returns promise that resolves to updated reservation
+ */
 export async function updateReservationStatus(reservationId, newStatus, signal) {
   const url = new URL(`${API_BASE_URL}/reservations/${reservationId}/status`);
   const options = {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createReservation } from "../utils/api";
 import formatReservationDate from "../utils/format-reservation-date"
-import ReservationForm from "./ReservationForm";
+import ReservationForm from "../forms/ReservationForm";
 
 function CreateReservation() {
     const history = useHistory();
@@ -33,7 +33,7 @@ function CreateReservation() {
 
     return (
         <div>
-            <h2>Create a New Reservation</h2>
+            <h2 className="mt-3">Create a New Reservation</h2>
             <ReservationForm formData={formData} setFormData={setFormData} error={error} setError={setError} submitHandler={handleNewReservationSubmit} />
         </div>
     )

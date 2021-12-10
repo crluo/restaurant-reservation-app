@@ -22,12 +22,13 @@ function SearchForm() {
     }
     return (
         <div>
+            <h2 className="mt-3">Search for an existing reservation</h2>
             <form onSubmit={handleSearch}>
                 <label htmlFor="search-prompt">Enter a customer's phone number</label>
-                <input type="text" name="mobile_number" value={phoneNumber} onChange={handleInputChange} className="form-control" id="mobile_number"/>
-                <button type="submit" className="btn-primary btn">Find</button>
+                <input type="text" name="mobile_number" value={phoneNumber} onChange={handleInputChange} className="form-control w-25" id="mobile_number"/>
+                <button type="submit" className="btn-primary btn mt-3">Find</button>
             </form>
-            {reservations.length ? <ReservationsList reservations={reservations}/> : <p>No reservations found</p>}
+            {reservations.length ? <ReservationsList reservations={reservations}/> : <p className="mt-3">No reservations found</p>}
         </div>
         
     )

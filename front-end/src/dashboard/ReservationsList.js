@@ -36,7 +36,7 @@ function ReservationsList({ reservations }){
           <tbody>
             {reservations.map((reservation, index) => {
               return (
-                <tr key={index}>
+                <tr key={reservation.reservation_id}>
                   <th scope="row">{index + 1}</th>
                   <td>{reservation.first_name}</td>
                   <td>{reservation.last_name}</td>

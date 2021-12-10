@@ -32,7 +32,7 @@ function Dashboard({ date }) {
 
   return (
     <main>
-      <h1>Dashboard</h1>
+      <h1 className="mt-3">Dashboard</h1>
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for date {date}</h4>
       </div>

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createTable } from "../utils/api";
-import ErrorAlert from "./ErrorAlert";
+import ErrorAlert from "../layout/ErrorAlert";
 
 const INITIAL_FORM_DATA = {
     table_name: "",
     capacity: 0,
-    occupied: "Free",
 }
 
 function TableForm() {
@@ -42,17 +41,18 @@ function TableForm() {
     return (
         <div>
             <ErrorAlert error={error} />
+            <h2 className="mt-3">Create a new table</h2>
             <form onSubmit={ onTableSubmit }>
                 <div className="form-group">
-                    <label for="exampleInputEmail1">Table Name</label>
-                    <input name="table_name" required minlength={2} value={formData.table_name} onChange={handleTableInputChange} type="text" className="form-control" id="first_name" aria-describedby="emailHelp" placeholder="John"/>
+                    <label htmlFor="exampleInputEmail1">Table Name</label>
+                    <input name="table_name" required minLength={2} value={formData.table_name} onChange={handleTableInputChange} type="text" className="form-control w-25" id="table_name" aria-describedby="emailHelp"/>
                 </div>
                 <div className="form-group">
-                    <label for="exampleInputPassword1">Capacity</label>
-                    <input name="capacity" required min={1} value={formData.capacity} onChange={handleTableInputChange} type="number" className="form-control" id="capacity" placeholder="0"/>
+                    <label htmlFor="capacity">Capacity</label>
+                    <input name="capacity" required min={1} value={formData.capacity} onChange={handleTableInputChange} type="number" className="form-control w-25" id="capacity" placeholder="0"/>
                 </div>
                 <button type="submit" className="btn btn-primary mr-3">Submit</button>
-                <button type="button" onClick={handleCancel} className="btn btn-primary">Cancel</button>
+                <button type="button" onClick={handleCancel} className="btn btn-secondary">Cancel</button>
             </form>
         </div>
     );
