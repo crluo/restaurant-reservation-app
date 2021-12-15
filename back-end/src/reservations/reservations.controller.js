@@ -70,8 +70,8 @@ function validReservationTime(req, res, next) {
   let inputErrors = [];
   console.log("71", req.body.data.reservation_date)
   console.log("72",res.locals.reservation_date)
-  console.log("73",res.locals.reservation_date.getDay())
-  if (res.locals.reservation_date.getDay() == 1) {
+  console.log("73",res.locals.reservation_date.getUTCDay())
+  if (res.locals.reservation_date.getUTCDay() == 2) {
     inputErrors.push("The restaurant is closed on Tuesday")
   }
   if (res.locals.reservation_date < Date.now()) {
