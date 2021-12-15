@@ -19,8 +19,8 @@ function EditReservation() {
     const [ formData, setFormData ] = useState(INITIAL_FORM_DATA);
 
     useEffect(() => {
+        const abortController = new AbortController();
         async function fetchReservation() {
-            const abortController = new AbortController();
             try {
                 const foundReservation = await readReservation(reservation_id, abortController.signal);
                 if (foundReservation) {
@@ -32,6 +32,7 @@ function EditReservation() {
             }
         }
         fetchReservation();
+        return () => abortController.abort();
     }, [ reservation_id ]);
 
     async function handleEditReservationSubmit(event) {
