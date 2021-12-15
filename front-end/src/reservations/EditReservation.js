@@ -18,20 +18,21 @@ function EditReservation() {
     const { reservation_id } = useParams();
     const [ formData, setFormData ] = useState(INITIAL_FORM_DATA);
 
-    useEffect(() => fetchReservation(), [ reservation_id ]);
-
-    async function fetchReservation() {
-        const abortController = new AbortController();
-        try {
-            const foundReservation = await readReservation(reservation_id, abortController.signal);
-            if (foundReservation) {
-                const { first_name, last_name, mobile_number, reservation_date, reservation_time, people } = foundReservation;
-                setFormData({ first_name, last_name, mobile_number, reservation_date, reservation_time, people });
+    useEffect(() => {
+        async function fetchReservation() {
+            const abortController = new AbortController();
+            try {
+                const foundReservation = await readReservation(reservation_id, abortController.signal);
+                if (foundReservation) {
+                    const { first_name, last_name, mobile_number, reservation_date, reservation_time, people } = foundReservation;
+                    setFormData({ first_name, last_name, mobile_number, reservation_date, reservation_time, people });
+                }
+            } catch (error) {
+                setError(error);
             }
-        } catch (error) {
-            setError(error);
         }
-    }
+        fetchReservation();
+    }, [ reservation_id ]);
 
     async function handleEditReservationSubmit(event) {
         event.preventDefault();

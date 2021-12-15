@@ -68,7 +68,7 @@ function validReservationTime(req, res, next) {
   let reservationTime = res.locals.reservation_time.replace(":", "");
   
   let inputErrors = [];
-  if (res.locals.reservation_date.getDay() == 1) {
+  if (res.locals.reservation_date.getUTCDay() == 2) {
     inputErrors.push("The restaurant is closed on Tuesday")
   }
   if (res.locals.reservation_date < Date.now()) {
